@@ -1,0 +1,7 @@
+{
+  "unknownError": "Erreur inconnue",
+  "loginError": "Erreur de connexion",
+  "user": {
+    "invalidPassword": "Mot de passe invalid"
+  }
+}
