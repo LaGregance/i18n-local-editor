@@ -13,7 +13,7 @@ export type EditTranslationDialogProps = {
 };
 
 export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
-  const EDITOR_CONFIG = useEditorConfig();
+  const editorConfig = useEditorConfig();
   const { isOpen, onClose } = props;
 
   const [key, setKey] = useState(props.translationKey);
@@ -92,7 +92,7 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
         </div>
         <div className="max-h-[500px] overflow-y-scroll">
           <InputGroup title="Key" value={key} onChange={setKey} />
-          {EDITOR_CONFIG.locales.map((locale) => (
+          {editorConfig.locales.map((locale) => (
             <InputGroup
               key={locale}
               title={locale}

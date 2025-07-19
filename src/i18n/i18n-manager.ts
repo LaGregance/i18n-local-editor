@@ -1,14 +1,15 @@
-import { EDITOR_CONFIG } from '@/i18n/config';
 import * as fs from 'node:fs';
 import { format } from 'prettier';
 import { deleteObjectValueAtPath, setObjectValueAtPath } from '@/shared/utils';
 import path from 'node:path';
+import { getPWD } from '@/shared/get-pwd';
+import { getEditorConfig } from '@/i18n/config';
 
 export abstract class I18nManager {
   static resolveFilePath(locale: string, namespace: string) {
     return path.join(
-      process.cwd(),
-      EDITOR_CONFIG.pathToFiles.replace('{{locale}}', locale).replace('{{ns}}', namespace)
+      getPWD(),
+      getEditorConfig().pathToFiles.replace('{{locale}}', locale).replace('{{ns}}', namespace)
     );
   }
 
@@ -23,10 +24,12 @@ export abstract class I18nManager {
   }
 
   static async buildKeyFile() {
+    const config = getEditorConfig();
+
     const keys: string[] = [];
 
-    for (const locale of EDITOR_CONFIG.locales) {
-      for (const namespace of EDITOR_CONFIG.namespaces) {
+    for (const locale of config.locales) {
+      for (const namespace of config.namespaces) {
         const filePath = this.resolveFilePath(locale, namespace);
         const translations = this.flattenTranslations(this.loadFile(filePath));
 
@@ -54,7 +57,7 @@ export abstract class I18nManager {
       export const trKeys = (key: TrKeys) => key;`;
 
     await format(content, { parser: 'typescript' });
-    fs.writeFileSync(path.join(process.cwd(), EDITOR_CONFIG.keyFile), await format(content, { parser: 'typescript' }), {
+    fs.writeFileSync(path.join(getPWD(), config.keyFile), await format(content, { parser: 'typescript' }), {
       encoding: 'utf8',
     });
   }
@@ -102,20 +105,22 @@ export abstract class I18nManager {
   }
 
   static setValue(keyWithNamespace: string, value: any) {
+    const confif = getEditorConfig();
+
     const splitted = keyWithNamespace.split(':');
     const namespace = splitted[0];
     const key = splitted[1];
 
     if (!namespace || !key) {
       throw new Error('Invalid key');
-    } else if (!EDITOR_CONFIG.namespaces.includes(namespace)) {
+    } else if (!confif.namespaces.includes(namespace)) {
       throw new Error('Unknown namespace');
     }
 
-    const locales = value ? Object.keys(value) : EDITOR_CONFIG.locales;
+    const locales = value ? Object.keys(value) : confif.locales;
 
     for (const locale of locales) {
-      if (!EDITOR_CONFIG.locales.includes(locale)) {
+      if (!confif.locales.includes(locale)) {
         throw new Error(`Unknown locale ${locale}`);
       }
       const filePath = this.resolveFilePath(locale, namespace);

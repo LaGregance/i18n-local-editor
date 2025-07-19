@@ -1,12 +1,12 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { EditorConfig } from '@/i18n/config';
 import { createContext, useContext } from 'react';
+import { queryKeys } from '@/shared/query-keys';
 
 export type AppProvidersProps = {
   children: React.ReactNode;
-  EDITOR_CONFIG: EditorConfig;
 };
 
 export const queryClient = new QueryClient({});
@@ -14,12 +14,23 @@ export const queryClient = new QueryClient({});
 const EditorConfigContext = createContext<EditorConfig>(undefined as any);
 export const useEditorConfig = () => useContext(EditorConfigContext);
 
+const ConfigProvider = (props: AppProvidersProps) => {
+  const { children } = props;
+
+  const { data } = useQuery(queryKeys.config.get);
+  if (!data) {
+    return <p>Loading...</p>;
+  }
+
+  return <EditorConfigContext value={data}>{children}</EditorConfigContext>;
+};
+
 export const AppProviders = (props: AppProvidersProps) => {
-  const { children, EDITOR_CONFIG } = props;
+  const { children } = props;
 
   return (
-    <EditorConfigContext value={EDITOR_CONFIG}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </EditorConfigContext>
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider>{children}</ConfigProvider>
+    </QueryClientProvider>
   );
 };

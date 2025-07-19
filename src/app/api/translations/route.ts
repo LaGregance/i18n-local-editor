@@ -1,14 +1,16 @@
 import type { NextRequest } from 'next/server';
 import { I18nManager } from '@/i18n/i18n-manager';
-import { EDITOR_CONFIG } from '@/i18n/config';
+import { getEditorConfig } from '@/i18n/config';
 
 export async function GET(request: NextRequest) {
+  const editorConfig = getEditorConfig();
+
   const params = request.nextUrl.searchParams;
   const q = params.get('q')?.toLowerCase();
   const locales = params.get('locales')?.split(',');
   const ns = params.get('ns')?.split(',');
 
-  let translations = I18nManager.loadTranslations(locales || EDITOR_CONFIG.locales, ns || EDITOR_CONFIG.namespaces);
+  let translations = I18nManager.loadTranslations(locales || editorConfig.locales, ns || editorConfig.namespaces);
 
   if (q) {
     const tmp: any = {};

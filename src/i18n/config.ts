@@ -1,6 +1,8 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
 
+import { getPWD } from '@/shared/get-pwd';
+
 export type EditorConfig = {
   locales: string[];
   defaultLocale: string;
@@ -10,6 +12,6 @@ export type EditorConfig = {
   fileType: 'json'; // | 'js' | 'ts';
 };
 
-export const EDITOR_CONFIG: EditorConfig = JSON.parse(
-  fs.readFileSync(path.join(process.cwd(), 'i18n-local-editor.json'), { encoding: 'utf8' })
-);
+export const getEditorConfig = (): EditorConfig => {
+  return JSON.parse(fs.readFileSync(path.join(getPWD(), 'i18n-local-editor.json'), { encoding: 'utf8' }));
+};

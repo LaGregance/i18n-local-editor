@@ -11,8 +11,8 @@ import { useSetSearchParams } from '@/shared/use-set-search-params';
 import { useEditorConfig } from '@/app/app-providers';
 
 export default function HomePageClient() {
-  const EDITOR_CONFIG = useEditorConfig();
-  const [namespaces, setNamespaces] = useState(EDITOR_CONFIG.namespaces);
+  const editorConfig = useEditorConfig();
+  const [namespaces, setNamespaces] = useState(editorConfig.namespaces);
   const [search, setSearch] = useState('');
   const [addDialogOpen, setAddDialogOpen] = useState(false);
 
@@ -45,7 +45,7 @@ export default function HomePageClient() {
       {addDialogOpen && (
         <EditTranslationDialog
           translationKey={''}
-          translations={EDITOR_CONFIG.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
+          translations={editorConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
           isOpen={true}
           onClose={() => setAddDialogOpen(false)}
         />
@@ -78,7 +78,7 @@ export default function HomePageClient() {
               Namespaces
             </h3>
             <div className="flex flex-wrap gap-3 p-4">
-              {EDITOR_CONFIG.namespaces.map((namespace) => (
+              {editorConfig.namespaces.map((namespace) => (
                 <Checkbox
                   key={namespace}
                   label={namespace}
@@ -120,7 +120,7 @@ export default function HomePageClient() {
                         <th className="border-b border-[#cedbe8] px-4 py-3 text-left text-sm leading-normal text-[#0d141c]">
                           Key
                         </th>
-                        {EDITOR_CONFIG.locales.map((locale) => (
+                        {editorConfig.locales.map((locale) => (
                           <th
                             key={locale}
                             className="border-b border-[#cedbe8] px-4 py-3 text-left text-sm leading-normal text-[#0d141c]"
@@ -139,7 +139,7 @@ export default function HomePageClient() {
                             onClick={() => setHttpParams({ key })}
                           >
                             <td className="px-4 py-2 text-sm leading-normal font-normal text-[#0d141c]">{key}</td>
-                            {EDITOR_CONFIG.locales.map((locale) => (
+                            {editorConfig.locales.map((locale) => (
                               <td key={locale} className="px-4 py-2 text-sm leading-normal font-normal text-[#49739c]">
                                 {data[key][locale]}
                               </td>
