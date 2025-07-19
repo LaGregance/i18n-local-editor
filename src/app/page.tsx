@@ -36,15 +36,17 @@ export default function Home() {
       }}
     >
       {data &&
-        Object.keys(data).map((key) => (
-          <EditTranslationDialog
-            key={key}
-            translationKey={key}
-            translations={data[key]}
-            isOpen={dialogOpen === key}
-            onClose={() => setDialogOpen(undefined)}
-          />
-        ))}
+        Object.keys(data).map((key) =>
+          dialogOpen === key ? (
+            <EditTranslationDialog
+              key={key}
+              translationKey={key}
+              translations={data[key]}
+              isOpen={true}
+              onClose={() => setDialogOpen(undefined)}
+            />
+          ) : null
+        )}
 
       <div className="layout-container flex h-full grow flex-col">
         <div className="flex flex-1 justify-center px-40 py-5">

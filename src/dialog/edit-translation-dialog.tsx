@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { EDITOR_CONFIG } from '@/i18n/config';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/query-keys';
-import { createURLQuery } from '@/shared/utils';
+import { createURLQuery, manageAPIResponse } from '@/shared/utils';
 
 export type EditTranslationDialogProps = {
   isOpen: boolean;
@@ -21,22 +21,26 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
   const queryClient = useQueryClient();
 
   const handleValidate = useCallback(async () => {
-    await fetch(`/api/translations`, {
+    const res = await fetch(`/api/translations`, {
       method: 'POST',
       body: JSON.stringify({ key, translations, oldKey: props.translationKey }),
     });
 
-    onClose();
-    await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
+    if (await manageAPIResponse(res)) {
+      onClose();
+      await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
+    }
   }, [onClose, queryClient, key, translations, props.translationKey]);
 
   const onDelete = useCallback(async () => {
-    await fetch(`/api/translations${createURLQuery({ key: props.translationKey })}`, {
+    const res = await fetch(`/api/translations${createURLQuery({ key: props.translationKey })}`, {
       method: 'DELETE',
     });
 
-    onClose();
-    await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
+    if (await manageAPIResponse(res)) {
+      onClose();
+      await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
+    }
   }, [props.translationKey, onClose, queryClient]);
 
   useEffect(() => {
@@ -63,7 +67,7 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
 
   return (
     <div className="fixed inset-0 z-10 flex w-screen items-center justify-center overflow-y-auto bg-[#88888888]">
-      <div className="min-w-[90%] rounded-lg bg-white px-2 pt-1 pb-2">
+      <div className="w-[1000px] max-w-[90%] rounded-lg bg-white px-2 pt-1 pb-2">
         <div className="flex items-center justify-between">
           <h3 className="px-4 pt-4 pb-2 text-lg leading-tight font-bold tracking-[-0.015em] text-[#0d141c]">
             Edit a translation

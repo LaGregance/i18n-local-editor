@@ -39,3 +39,19 @@ export const createURLQuery = (params: any) => {
   }
   return query;
 };
+
+export const manageAPIResponse = async (response: Response) => {
+  if (response.status >= 400) {
+    const data = await response.json();
+
+    const popup = document.createElement('div');
+    popup.innerHTML = `<div class="bg-red-500 text-white p-4 rounded-lg absolute top-10 right-10 z-20"><p>${data?.message ?? 'Unknown error'}</p></div>`;
+    document.querySelector('body')?.append(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 1500);
+    return false;
+  }
+  return true;
+};

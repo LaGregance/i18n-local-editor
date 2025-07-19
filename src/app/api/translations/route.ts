@@ -32,17 +32,25 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const data = await request.json();
-  if (data.oldKey && data.oldKey !== data.key) {
-    I18nLoader.setValue(data.oldKey, undefined);
+  try {
+    const data = await request.json();
+    if (data.oldKey && data.oldKey !== data.key) {
+      I18nLoader.setValue(data.oldKey, undefined);
+    }
+    I18nLoader.setValue(data.key, data.translations);
+    return Response.json({ success: true });
+  } catch (e: any) {
+    return Response.json({ success: false, message: e?.message }, { status: 500 });
   }
-  I18nLoader.setValue(data.key, data.translations);
-  return Response.json({ success: true });
 }
 
 export async function DELETE(request: NextRequest) {
-  const params = request.nextUrl.searchParams;
-  const key = params.get('key')!;
-  I18nLoader.setValue(key, undefined);
-  return Response.json({ success: true });
+  try {
+    const params = request.nextUrl.searchParams;
+    const key = params.get('key')!;
+    I18nLoader.setValue(key, undefined);
+    return Response.json({ success: true });
+  } catch (e: any) {
+    return Response.json({ success: false, message: e?.message }, { status: 500 });
+  }
 }
