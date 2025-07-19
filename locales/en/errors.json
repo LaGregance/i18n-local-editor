@@ -1,7 +1,0 @@
-{
-  "unknownError": "unknown error",
-  "loginError": "login error",
-  "user": {
-    "invalidPassword": "Invalid password"
-  }
-}
