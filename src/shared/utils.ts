@@ -50,7 +50,7 @@ export const manageAPIResponse = async (response: Response) => {
 
     setTimeout(() => {
       popup.remove();
-    }, 1500);
+    }, 5000);
     return false;
   }
   return true;

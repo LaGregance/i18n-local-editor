@@ -3,5 +3,7 @@
         "name": "Nom",
         "email": "Adresse mail"
     },
-    "yes": "oui"
+    "yes": "oui",
+    "name": "Nom",
+    "qwertyuiop": "qwertyui"
 }

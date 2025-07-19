@@ -7,22 +7,28 @@ import { useEffect, useRef, useState } from 'react';
 import { EDITOR_CONFIG } from '@/i18n/config';
 import { SearchInput } from '@/components/search-input';
 import { EditTranslationDialog } from '@/dialog/edit-translation-dialog';
+import { useSearchParams } from 'next/navigation';
+import { useSetSearchParams } from '@/shared/use-set-search-params';
 
 export default function Home() {
   const [namespaces, setNamespaces] = useState(EDITOR_CONFIG.namespaces);
   const [search, setSearch] = useState('');
-  const [dialogOpen, setDialogOpen] = useState<string>();
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
-  const debouceTimeout = useRef<NodeJS.Timeout>(null);
+  const setHttpParams = useSetSearchParams();
+  const httpParams = useSearchParams();
+  const editingKey = httpParams.get('key');
+
+  const debounceTimeout = useRef<NodeJS.Timeout>(null);
   const [debounceSearch, setDebounceSearch] = useState('');
   useEffect(() => {
-    if (debouceTimeout.current) {
-      clearTimeout(debouceTimeout.current);
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
 
-    debouceTimeout.current = setTimeout(() => {
+    debounceTimeout.current = setTimeout(() => {
       setDebounceSearch(search);
-      debouceTimeout.current = null;
+      debounceTimeout.current = null;
     }, 800);
   }, [search]);
 
@@ -35,15 +41,23 @@ export default function Home() {
         fontFamily: 'Inter, &quot;Noto Sans&quot;, sans-serif',
       }}
     >
+      {addDialogOpen && (
+        <EditTranslationDialog
+          translationKey={''}
+          translations={EDITOR_CONFIG.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
+          isOpen={true}
+          onClose={() => setAddDialogOpen(false)}
+        />
+      )}
       {data &&
         Object.keys(data).map((key) =>
-          dialogOpen === key ? (
+          editingKey === key ? (
             <EditTranslationDialog
               key={key}
               translationKey={key}
               translations={data[key]}
               isOpen={true}
-              onClose={() => setDialogOpen(undefined)}
+              onClose={() => setHttpParams({ key: undefined })}
             />
           ) : null
         )}
@@ -84,9 +98,18 @@ export default function Home() {
                 />
               ))}
             </div>
-            <h3 className="px-4 pt-4 pb-2 text-lg leading-tight font-bold tracking-[-0.015em] text-[#0d141c]">
-              Translations
-            </h3>
+            <div className="me-4 flex items-center justify-between">
+              <h3 className="px-4 pt-4 pb-2 text-lg leading-tight font-bold tracking-[-0.015em] text-[#0d141c]">
+                Translations
+              </h3>
+              <button
+                type="button"
+                onClick={() => setAddDialogOpen(true)}
+                className="inline-flex justify-center rounded-md bg-indigo-600 px-10 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+              >
+                Add
+              </button>
+            </div>
             <div className="@container flex flex-1 items-stretch px-4 py-3">
               <div className="relative flex-1 overflow-y-hidden rounded-lg border border-[#cedbe8]">
                 <div className="absolute top-0 right-0 bottom-0 left-0 overflow-y-auto">
@@ -112,7 +135,7 @@ export default function Home() {
                           <tr
                             key={key}
                             className="cursor-pointer border-t border-t-[#cedbe8] hover:bg-[#f1f2f2]"
-                            onClick={() => setDialogOpen(key)}
+                            onClick={() => setHttpParams({ key })}
                           >
                             <td className="px-4 py-2 text-sm leading-normal font-normal text-[#0d141c]">{key}</td>
                             {EDITOR_CONFIG.locales.map((locale) => (

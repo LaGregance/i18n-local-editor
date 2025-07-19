@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import { I18nLoader } from '@/i18n/i18n-loader';
+import { I18nManager } from '@/i18n/i18n-manager';
 import { EDITOR_CONFIG } from '@/i18n/config';
 
 export async function GET(request: NextRequest) {
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   const locales = params.get('locales')?.split(',');
   const ns = params.get('ns')?.split(',');
 
-  let translations = I18nLoader.loadTranslations(locales || EDITOR_CONFIG.locales, ns || EDITOR_CONFIG.namespaces);
+  let translations = I18nManager.loadTranslations(locales || EDITOR_CONFIG.locales, ns || EDITOR_CONFIG.namespaces);
 
   if (q) {
     const tmp: any = {};
@@ -35,9 +35,10 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     if (data.oldKey && data.oldKey !== data.key) {
-      I18nLoader.setValue(data.oldKey, undefined);
+      I18nManager.setValue(data.oldKey, undefined);
     }
-    I18nLoader.setValue(data.key, data.translations);
+    I18nManager.setValue(data.key, data.translations);
+    await I18nManager.buildKeyFile();
     return Response.json({ success: true });
   } catch (e: any) {
     return Response.json({ success: false, message: e?.message }, { status: 500 });
@@ -48,7 +49,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const params = request.nextUrl.searchParams;
     const key = params.get('key')!;
-    I18nLoader.setValue(key, undefined);
+    I18nManager.setValue(key, undefined);
+    await I18nManager.buildKeyFile();
     return Response.json({ success: true });
   } catch (e: any) {
     return Response.json({ success: false, message: e?.message }, { status: 500 });
