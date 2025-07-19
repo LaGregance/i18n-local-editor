@@ -4,13 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/query-keys';
 import { Checkbox } from '@/components/checkbox';
 import { useEffect, useRef, useState } from 'react';
-import { EDITOR_CONFIG } from '@/i18n/config';
 import { SearchInput } from '@/components/search-input';
 import { EditTranslationDialog } from '@/dialog/edit-translation-dialog';
 import { useSearchParams } from 'next/navigation';
 import { useSetSearchParams } from '@/shared/use-set-search-params';
+import { useEditorConfig } from '@/app/app-providers';
 
 export default function Home() {
+  const EDITOR_CONFIG = useEditorConfig();
   const [namespaces, setNamespaces] = useState(EDITOR_CONFIG.namespaces);
   const [search, setSearch] = useState('');
   const [addDialogOpen, setAddDialogOpen] = useState(false);

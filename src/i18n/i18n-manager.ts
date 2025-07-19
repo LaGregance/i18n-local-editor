@@ -2,10 +2,14 @@ import { EDITOR_CONFIG } from '@/i18n/config';
 import * as fs from 'node:fs';
 import { format } from 'prettier';
 import { deleteObjectValueAtPath, setObjectValueAtPath } from '@/shared/utils';
+import path from 'node:path';
 
 export abstract class I18nManager {
   static resolveFilePath(locale: string, namespace: string) {
-    return EDITOR_CONFIG.pathToFiles.replace('{{locale}}', locale).replace('{{ns}}', namespace);
+    return path.join(
+      process.cwd(),
+      EDITOR_CONFIG.pathToFiles.replace('{{locale}}', locale).replace('{{ns}}', namespace)
+    );
   }
 
   static loadFile(filePath: string) {
@@ -50,7 +54,9 @@ export abstract class I18nManager {
       export const trKeys = (key: TrKeys) => key;`;
 
     await format(content, { parser: 'typescript' });
-    fs.writeFileSync(EDITOR_CONFIG.keyFile, await format(content, { parser: 'typescript' }), { encoding: 'utf8' });
+    fs.writeFileSync(path.join(process.cwd(), EDITOR_CONFIG.keyFile), await format(content, { parser: 'typescript' }), {
+      encoding: 'utf8',
+    });
   }
 
   /**

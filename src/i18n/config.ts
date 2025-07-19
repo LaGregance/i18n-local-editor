@@ -1,3 +1,6 @@
+import * as fs from 'node:fs';
+import path from 'node:path';
+
 export type EditorConfig = {
   locales: string[];
   defaultLocale: string;
@@ -7,11 +10,6 @@ export type EditorConfig = {
   fileType: 'json'; // | 'js' | 'ts';
 };
 
-export const EDITOR_CONFIG = {
-  locales: ['fr', 'en'],
-  defaultLocale: 'en',
-  namespaces: ['common', 'errors'],
-  keyFile: '/Users/gtaja/Projects/i18n-local-editor/locales/trKeys.ts',
-  pathToFiles: '/Users/gtaja/Projects/i18n-local-editor/locales/{{locale}}/{{ns}}.json',
-  fileType: 'json',
-};
+export const EDITOR_CONFIG: EditorConfig = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), 'i18n-local-editor.json'), { encoding: 'utf8' })
+);

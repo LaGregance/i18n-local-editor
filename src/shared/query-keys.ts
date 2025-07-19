@@ -10,4 +10,12 @@ export const queryKeys = createQueryKeyStore({
       },
     }),
   },
+  config: {
+    get: {
+      queryKey: null,
+      queryFn: async () => {
+        return fetch('/api/config').then((res) => res.json());
+      },
+    },
+  },
 });

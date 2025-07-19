@@ -1,9 +1,9 @@
 import { InputGroup } from '@/components/input-group';
 import { useCallback, useEffect, useState } from 'react';
-import { EDITOR_CONFIG } from '@/i18n/config';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/shared/query-keys';
 import { createURLQuery, manageAPIResponse } from '@/shared/utils';
+import { useEditorConfig } from '@/app/app-providers';
 
 export type EditTranslationDialogProps = {
   isOpen: boolean;
@@ -13,6 +13,7 @@ export type EditTranslationDialogProps = {
 };
 
 export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
+  const EDITOR_CONFIG = useEditorConfig();
   const { isOpen, onClose } = props;
 
   const [key, setKey] = useState(props.translationKey);

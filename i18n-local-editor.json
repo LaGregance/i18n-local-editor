@@ -1,0 +1,8 @@
+{
+  "locales": ["fr", "en"],
+  "defaultLocale": "en",
+  "namespaces": ["common", "errors"],
+  "keyFile": "./locales/trKeys.ts",
+  "pathToFiles": "./locales/{{locale}}/{{ns}}.json",
+  "fileType": "json"
+}
