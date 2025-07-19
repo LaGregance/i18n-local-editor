@@ -6,10 +6,12 @@ import { Checkbox } from '@/components/checkbox';
 import { useEffect, useRef, useState } from 'react';
 import { EDITOR_CONFIG } from '@/i18n/config';
 import { SearchInput } from '@/components/search-input';
+import { EditTranslationDialog } from '@/dialog/edit-translation-dialog';
 
 export default function Home() {
   const [namespaces, setNamespaces] = useState(EDITOR_CONFIG.namespaces);
   const [search, setSearch] = useState('');
+  const [dialogOpen, setDialogOpen] = useState<string>();
 
   const debouceTimeout = useRef<NodeJS.Timeout>(null);
   const [debounceSearch, setDebounceSearch] = useState('');
@@ -33,6 +35,17 @@ export default function Home() {
         fontFamily: 'Inter, &quot;Noto Sans&quot;, sans-serif',
       }}
     >
+      {data &&
+        Object.keys(data).map((key) => (
+          <EditTranslationDialog
+            key={key}
+            translationKey={key}
+            translations={data[key]}
+            isOpen={dialogOpen === key}
+            onClose={() => setDialogOpen(undefined)}
+          />
+        ))}
+
       <div className="layout-container flex h-full grow flex-col">
         <div className="flex flex-1 justify-center px-40 py-5">
           <div className="layout-content-container flex max-w-[960px] flex-1 flex-col">
@@ -94,7 +107,11 @@ export default function Home() {
                     <tbody>
                       {data &&
                         Object.keys(data).map((key) => (
-                          <tr key={key} className="cursor-pointer border-t border-t-[#cedbe8] hover:bg-[#f1f2f2]">
+                          <tr
+                            key={key}
+                            className="cursor-pointer border-t border-t-[#cedbe8] hover:bg-[#f1f2f2]"
+                            onClick={() => setDialogOpen(key)}
+                          >
                             <td className="px-4 py-2 text-sm leading-normal font-normal text-[#0d141c]">{key}</td>
                             {EDITOR_CONFIG.locales.map((locale) => (
                               <td key={locale} className="px-4 py-2 text-sm leading-normal font-normal text-[#49739c]">

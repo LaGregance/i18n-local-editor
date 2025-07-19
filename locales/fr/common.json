@@ -1,8 +1,7 @@
 {
-  "yes": "oui",
-  "no": "non",
-  "user": {
-    "name": "Nom",
-    "email": "Adresse mail"
-  }
+    "user": {
+        "name": "Nom",
+        "email": "Adresse mail"
+    },
+    "yes": "oui"
 }

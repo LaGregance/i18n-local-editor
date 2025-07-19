@@ -1,12 +1,5 @@
 import { createQueryKeyStore } from '@lukemorales/query-key-factory';
-
-const createURLQuery = (params: any) => {
-  let query = new URLSearchParams(params).toString();
-  if (query.length > 0) {
-    query = '?' + query;
-  }
-  return query;
-};
+import { createURLQuery } from '@/shared/utils';
 
 export const queryKeys = createQueryKeyStore({
   transactions: {

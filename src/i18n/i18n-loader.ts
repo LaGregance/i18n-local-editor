@@ -1,5 +1,6 @@
 import { EDITOR_CONFIG } from '@/i18n/config';
 import * as fs from 'node:fs';
+import { deleteObjectValueAtPath, setObjectValueAtPath } from '@/shared/utils';
 
 export abstract class I18nLoader {
   static resolveFilePath(locale: string, namespace: string) {
@@ -9,6 +10,11 @@ export abstract class I18nLoader {
   static loadFile(filePath: string) {
     // TODO: Manage non JSON files
     return JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }));
+  }
+
+  static saveFile(filePath: string, content: any) {
+    // TODO: Manage non JSON files
+    fs.writeFileSync(filePath, JSON.stringify(content, null, 4), { encoding: 'utf8' });
   }
 
   /**
@@ -51,5 +57,33 @@ export abstract class I18nLoader {
     }
 
     return result;
+  }
+
+  static setValue(keyWithNamespace: string, value: any) {
+    const splitted = keyWithNamespace.split(':');
+    const namespace = splitted[0];
+    const key = splitted[1];
+
+    if (!namespace || !key) {
+      throw new Error('Invalid key');
+    } else if (!EDITOR_CONFIG.namespaces.includes(namespace)) {
+      throw new Error('Unknown namespace');
+    }
+
+    const locales = value ? Object.keys(value) : EDITOR_CONFIG.locales;
+
+    for (const locale of locales) {
+      if (!EDITOR_CONFIG.locales.includes(locale)) {
+        throw new Error(`Unknown locale ${locale}`);
+      }
+      const filePath = this.resolveFilePath(locale, namespace);
+      const content = this.loadFile(filePath);
+      if (!value || !value[locale]) {
+        deleteObjectValueAtPath(content, key);
+      } else {
+        setObjectValueAtPath(content, key, value[locale]);
+      }
+      this.saveFile(filePath, content);
+    }
   }
 }
