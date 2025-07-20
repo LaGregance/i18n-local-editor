@@ -12,3 +12,4 @@ cp -a public .next/standalone/public
 
 # 2. Build scripts
 yarn tsc --project tsconfig.scripts.json && yarn tsc-alias --project tsconfig.scripts.json
+chmod +x dist/scripts/build-keys.js
