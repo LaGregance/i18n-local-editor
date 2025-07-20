@@ -106,10 +106,8 @@ export class I18nFileEditor {
     }
 
     const path = key.split('.');
-    console.log('path: ', path);
     for (const part of path) {
       if (!/^[a-zA-Z0-9_]+$/.test(part)) {
-        console.log('part: ', part);
         throw new Error('Invalid key only alphanumeric characters and underscores are allowed');
       }
     }
