@@ -1,6 +1,6 @@
 {
   "name": "i18n-local-editor",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/LaGregance/i18n-local-editor"
@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "I18N_DEVELOPMENT=1 PORT=25560 next dev --turbopack",
     "build": "./build.sh",
+    "pub": "yarn build && yarn publish --access public",
     "start": "next start",
     "lint": "next lint"
   },

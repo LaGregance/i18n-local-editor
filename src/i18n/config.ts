@@ -7,6 +7,7 @@ export type EditorConfig = {
   locales: string[];
   defaultLocale: string;
   namespaces: string[];
+  defaultNamespace: string;
   pathToFiles: string;
   keyFile: string;
   fileType: 'json'; // | 'js' | 'ts';
