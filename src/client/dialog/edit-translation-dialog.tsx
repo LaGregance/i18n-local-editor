@@ -2,19 +2,20 @@ import { InputGroup } from '@/client/components/input-group';
 import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/client/query-keys';
-import { createURLQuery, manageAPIResponse } from '@/shared/utils';
 import { useEditorConfig } from '@/app/app-providers';
+import { createURLQuery, manageAPIResponse } from '@/client/client-utils';
 
 export type EditTranslationDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   translationKey: string;
   translations: any;
+  mode: 'add' | 'edit';
 };
 
 export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
   const editorConfig = useEditorConfig();
-  const { isOpen, onClose } = props;
+  const { mode, isOpen, onClose } = props;
 
   const [key, setKey] = useState(props.translationKey);
   const [translations, setTranslations] = useState(props.translations);
@@ -23,15 +24,15 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
 
   const handleValidate = useCallback(async () => {
     const res = await fetch(`/api/translations`, {
-      method: 'POST',
-      body: JSON.stringify({ key, translations, oldKey: props.translationKey }),
+      method: mode === 'add' ? 'POST' : 'PATCH',
+      body: JSON.stringify({ key, translations, oldKey: mode === 'add' ? undefined : props.translationKey }),
     });
 
     if (await manageAPIResponse(res)) {
       onClose();
       await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
     }
-  }, [onClose, queryClient, key, translations, props.translationKey]);
+  }, [onClose, queryClient, key, translations, props.translationKey, mode]);
 
   const onDelete = useCallback(async () => {
     const res = await fetch(`/api/translations${createURLQuery({ key: props.translationKey })}`, {
@@ -71,7 +72,7 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
       <div className="w-[1000px] max-w-[90%] rounded-lg bg-white px-2 pt-1 pb-2">
         <div className="flex items-center justify-between">
           <h3 className="px-4 pt-4 pb-2 text-lg leading-tight font-bold tracking-[-0.015em] text-[#0d141c]">
-            Edit a translation
+            {mode === 'add' ? 'Add' : 'Edit'} a translation
           </h3>
           <button
             type="button"

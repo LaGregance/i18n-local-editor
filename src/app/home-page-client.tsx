@@ -9,7 +9,8 @@ import { EditTranslationDialog } from '@/client/dialog/edit-translation-dialog';
 import { useSearchParams } from 'next/navigation';
 import { useSetSearchParams } from '@/client/use-set-search-params';
 import { useEditorConfig } from '@/app/app-providers';
-import { showSnackbar } from '@/shared/utils';
+
+import { showSnackbar } from '@/client/client-utils';
 
 export default function HomePageClient() {
   const editorConfig = useEditorConfig();
@@ -45,24 +46,23 @@ export default function HomePageClient() {
     >
       {addDialogOpen && (
         <EditTranslationDialog
+          mode="add"
           translationKey={''}
           translations={editorConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
           isOpen={true}
           onClose={() => setAddDialogOpen(false)}
         />
       )}
-      {data &&
-        Object.keys(data).map((key) =>
-          editingKey === key ? (
-            <EditTranslationDialog
-              key={key}
-              translationKey={key}
-              translations={data[key]}
-              isOpen={true}
-              onClose={() => setHttpParams({ key: undefined })}
-            />
-          ) : null
-        )}
+      {editingKey && data?.[editingKey] && (
+        <EditTranslationDialog
+          key={editingKey}
+          mode="edit"
+          translationKey={editingKey}
+          translations={data[editingKey]}
+          isOpen={true}
+          onClose={() => setHttpParams({ key: undefined })}
+        />
+      )}
 
       <div className="layout-container flex h-full grow flex-col">
         <div className="flex flex-1 justify-center px-40 py-5">

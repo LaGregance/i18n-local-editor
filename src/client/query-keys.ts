@@ -1,5 +1,6 @@
 import { createQueryKeyStore } from '@lukemorales/query-key-factory';
-import { createURLQuery } from '@/shared/utils';
+
+import { createURLQuery } from '@/client/client-utils';
 
 export const queryKeys = createQueryKeyStore({
   transactions: {

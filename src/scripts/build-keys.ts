@@ -1,4 +1,5 @@
 #!/usr/bin/env node
-import { I18nManager } from '@/shared/i18n-manager';
+import { I18nFileEditor } from '@/shared/i18n-file-editor';
 
-I18nManager.buildKeyFile().catch(console.error);
+const editor = I18nFileEditor.loadFromConfig();
+editor.buildKeyFile().catch(console.error);
