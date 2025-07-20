@@ -111,7 +111,7 @@ export abstract class I18nManager {
   }
 
   static setValue(keyWithNamespace: string, value: any) {
-    const confif = getEditorConfig();
+    const config = getEditorConfig();
 
     const splitted = keyWithNamespace.split(':');
     const namespace = splitted[0];
@@ -119,14 +119,14 @@ export abstract class I18nManager {
 
     if (!namespace || !key) {
       throw new Error('Invalid key');
-    } else if (!confif.namespaces.includes(namespace)) {
+    } else if (!config.namespaces.includes(namespace)) {
       throw new Error('Unknown namespace');
     }
 
-    const locales = value ? Object.keys(value) : confif.locales;
+    const locales = value ? Object.keys(value) : config.locales;
 
     for (const locale of locales) {
-      if (!confif.locales.includes(locale)) {
+      if (!config.locales.includes(locale)) {
         throw new Error(`Unknown locale ${locale}`);
       }
       const filePath = this.resolveFilePath(locale, namespace);

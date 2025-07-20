@@ -1,7 +1,7 @@
 import path from 'path';
 
 export const getPWD = () => {
-  if (process.env.I18N_DEVELOPMENT) {
+  if (process.env.I18N_DEVELOPMENT || !process.env.IS_NEXT_RUNTIME) {
     return process.cwd();
   } else {
     // CWD will be root-project/node_modules/i18n-local-editor/.next/standalone

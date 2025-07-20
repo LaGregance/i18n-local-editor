@@ -19,6 +19,7 @@ export const setObjectValueAtPath = (obj: any, path: string, value: any) => {
 
   for (let i = 0; i < keys.length - 1; i++) {
     obj[keys[i]] ??= {};
+    obj = obj[keys[i]];
   }
   obj[keys[keys.length - 1]] = value;
 };
