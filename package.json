@@ -1,13 +1,13 @@
 {
   "name": "i18n-local-editor",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/LaGregance/i18n-local-editor"
   },
   "bin": {
     "i18n-local-editor": ".next/standalone/server.js",
-    "i18n-build-keys": "dist/build-keys.js"
+    "i18n-build-keys": "dist/scripts/build-keys.js"
   },
   "files": [
     ".next",
