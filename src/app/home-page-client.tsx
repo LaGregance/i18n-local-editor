@@ -1,23 +1,28 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/client/query-keys';
 import { Checkbox } from '@/client/components/checkbox';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SearchInput } from '@/client/components/search-input';
 import { EditTranslationDialog } from '@/client/dialog/edit-translation-dialog';
 import { useSearchParams } from 'next/navigation';
 import { useSetSearchParams } from '@/client/use-set-search-params';
 import { useEditorConfig } from '@/app/app-providers';
-
-import { showSnackbar } from '@/client/client-utils';
+import { ButtonClipboard } from '@/client/components/button-clipboard';
+import { ButtonDuplicate } from '@/client/components/button-duplicate';
+import { ButtonDelete } from '@/client/components/button-delete';
+import { ConfirmDialog } from '@/client/dialog/confirm-dialog';
+import { createURLQuery, manageAPIResponse } from '@/client/client-utils';
 
 export default function HomePageClient() {
   const editorConfig = useEditorConfig();
   const [namespaces, setNamespaces] = useState(editorConfig.namespaces);
   const [search, setSearch] = useState('');
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState<boolean | { key: string; translations: any }>(false);
+  const [deletingKeyDialog, setDeletingKeyDialog] = useState<string | undefined>(undefined);
 
+  const queryClient = useQueryClient();
   const setHttpParams = useSetSearchParams();
   const httpParams = useSearchParams();
   const editingKey = httpParams.get('key');
@@ -37,6 +42,26 @@ export default function HomePageClient() {
 
   const { data } = useQuery(queryKeys.transactions.getAll({ q: debounceSearch, ns: namespaces }));
 
+  const handleDuplicate = useCallback(
+    (key: string) => {
+      setAddDialogOpen({ key, translations: data[key] });
+    },
+    [data]
+  );
+
+  const handleDelete = useCallback(
+    async (key: string) => {
+      const res = await fetch(`/api/translations${createURLQuery({ key })}`, {
+        method: 'DELETE',
+      });
+
+      if (await manageAPIResponse(res)) {
+        await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
+      }
+    },
+    [queryClient]
+  );
+
   return (
     <div
       className="group/design-root relative flex size-full min-h-screen flex-col overflow-x-hidden bg-slate-50"
@@ -44,11 +69,24 @@ export default function HomePageClient() {
         fontFamily: 'Inter, &quot;Noto Sans&quot;, sans-serif',
       }}
     >
+      {deletingKeyDialog && (
+        <ConfirmDialog
+          isOpen={true}
+          title="Delete key"
+          message="Are you sure you want to delete this key?"
+          onConfirm={() => handleDelete(deletingKeyDialog)}
+          onClose={() => setDeletingKeyDialog(undefined)}
+        />
+      )}
       {addDialogOpen && (
         <EditTranslationDialog
           mode="add"
-          translationKey={''}
-          translations={editorConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
+          translationKey={typeof addDialogOpen === 'object' ? addDialogOpen.key : ''}
+          translations={
+            typeof addDialogOpen === 'object'
+              ? addDialogOpen.translations
+              : (editorConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any)
+          }
           isOpen={true}
           onClose={() => setAddDialogOpen(false)}
           existingKeys={data && Object.keys(data)}
@@ -133,6 +171,7 @@ export default function HomePageClient() {
                             {locale}
                           </th>
                         ))}
+                        <th className="border-b border-[#cedbe8] px-4 py-3 text-left text-sm leading-normal text-[#0d141c]"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -145,28 +184,7 @@ export default function HomePageClient() {
                           >
                             <td className="px-4 py-2 text-sm leading-normal font-normal text-[#0d141c]">
                               <div className="flex items-center gap-2">
-                                <button
-                                  onClick={async (event) => {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    await navigator.clipboard.writeText(key);
-                                    showSnackbar('Copied to clipboard', 'info', 1500);
-                                  }}
-                                  className="cursor-pointer rounded-full p-2 transition-colors hover:bg-gray-200"
-                                >
-                                  <svg
-                                    className="h-5 w-5"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                                  </svg>
-                                </button>
+                                <ButtonClipboard text={key} />
                                 <span>{key}</span>
                               </div>
                             </td>
@@ -177,6 +195,12 @@ export default function HomePageClient() {
                                   : data[key][locale]}
                               </td>
                             ))}
+                            <td className="pe-2">
+                              <div className="flex items-center gap-2">
+                                <ButtonDuplicate onClick={() => handleDuplicate(key)} />
+                                <ButtonDelete onClick={() => setDeletingKeyDialog(key)} />
+                              </div>
+                            </td>
                           </tr>
                         ))}
                     </tbody>

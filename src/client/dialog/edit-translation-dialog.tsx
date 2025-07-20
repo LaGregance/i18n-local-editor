@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/client/query-keys';
 import { useEditorConfig } from '@/app/app-providers';
 import { createURLQuery, manageAPIResponse } from '@/client/client-utils';
+import { ButtonClose } from '@/client/components/button-close';
 
 export type EditTranslationDialogProps = {
   isOpen: boolean;
@@ -90,22 +91,7 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
           <h3 className="px-4 pt-4 pb-2 text-lg leading-tight font-bold tracking-[-0.015em] text-[#0d141c]">
             {mode === 'add' ? 'Add' : 'Edit'} a translation
           </h3>
-          <button
-            type="button"
-            className="mr-2 cursor-pointer rounded-full p-2 transition-colors hover:bg-gray-200"
-            onClick={onClose}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <ButtonClose onClick={onClose} />
         </div>
         <div className="max-h-[500px] overflow-y-scroll">
           <InputGroup
@@ -132,13 +118,17 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
         </div>
 
         <div className="flex items-end justify-between px-4 pt-6">
-          <button
-            type="button"
-            onClick={onDelete}
-            className="inline-flex justify-center rounded-md bg-red-600 px-10 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
-          >
-            Delete
-          </button>
+          {mode === 'add' ? (
+            <div />
+          ) : (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="inline-flex justify-center rounded-md bg-red-600 px-10 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:w-auto"
+            >
+              Delete
+            </button>
+          )}
           <button
             type="button"
             onClick={handleValidate}
