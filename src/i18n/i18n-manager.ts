@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import { format } from 'prettier';
-import { deleteObjectValueAtPath, setObjectValueAtPath } from '@/shared/utils';
+import { deleteObjectValueAtPath, pushIgnoreDuplicates, removeSuffix, setObjectValueAtPath } from '@/shared/utils';
 import path from 'node:path';
 import { getPWD } from '@/shared/get-pwd';
 import { getEditorConfig } from '@/i18n/config';
@@ -34,17 +34,16 @@ export abstract class I18nManager {
         const filePath = this.resolveFilePath(locale, namespace);
         const translations = this.flattenTranslations(this.loadFile(filePath));
 
-        for (const key of Object.keys(translations)) {
+        for (let key of Object.keys(translations)) {
+          // Manage pluralization
+          key = removeSuffix(key, ['_zero', '_one', '_others']);
+
           if (namespace === config.defaultNamespace) {
-            if (!defaultKeys.includes(key)) {
-              defaultKeys.push(key);
-            }
+            pushIgnoreDuplicates(defaultKeys, key);
           }
 
           const fullKey = namespace + ':' + key;
-          if (!keys.includes(fullKey)) {
-            keys.push(fullKey);
-          }
+          pushIgnoreDuplicates(keys, fullKey);
         }
       }
     }
