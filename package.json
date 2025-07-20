@@ -6,10 +6,12 @@
     "url": "https://github.com/LaGregance/i18n-local-editor"
   },
   "bin": {
-    "i18n-local-editor": ".next/standalone/server.js"
+    "i18n-local-editor": ".next/standalone/server.js",
+    "i18n-build-keys": "dist/build-keys.js"
   },
   "files": [
-    ".next"
+    ".next",
+    "src/scripts"
   ],
   "scripts": {
     "dev": "I18N_DEVELOPMENT=1 PORT=25560 next dev --turbopack",
@@ -37,6 +39,7 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5"
   }
 }

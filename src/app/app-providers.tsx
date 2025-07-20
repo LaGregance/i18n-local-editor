@@ -1,9 +1,9 @@
 'use client';
 
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { EditorConfig } from '@/i18n/config';
+import { EditorConfig } from '@/shared/config';
 import { createContext, useContext } from 'react';
-import { queryKeys } from '@/shared/query-keys';
+import { queryKeys } from '@/client/query-keys';
 
 export type AppProvidersProps = {
   children: React.ReactNode;

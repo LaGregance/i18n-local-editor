@@ -3,7 +3,7 @@ import { format } from 'prettier';
 import { deleteObjectValueAtPath, pushIgnoreDuplicates, removeSuffix, setObjectValueAtPath } from '@/shared/utils';
 import path from 'node:path';
 import { getPWD } from '@/shared/get-pwd';
-import { getEditorConfig } from '@/i18n/config';
+import { getEditorConfig } from '@/shared/config';
 
 export abstract class I18nManager {
   static resolveFilePath(locale: string, namespace: string) {

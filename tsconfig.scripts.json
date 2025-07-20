@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "module": "commonjs",
+    "resolveJsonModule": true,
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": false,
+    "esModuleInterop": true,
+
+    "skipLibCheck": true,
+    "outDir": "dist",
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/scripts", "src/shared"],
+  "exclude": ["node_modules"]
+}

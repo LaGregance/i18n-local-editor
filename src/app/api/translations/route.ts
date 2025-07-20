@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
-import { I18nManager } from '@/i18n/i18n-manager';
-import { getEditorConfig } from '@/i18n/config';
+import { I18nManager } from '@/shared/i18n-manager';
+import { getEditorConfig } from '@/shared/config';
 
 export async function GET(request: NextRequest) {
   const editorConfig = getEditorConfig();

@@ -1,4 +1,4 @@
-import { getEditorConfig } from '@/i18n/config';
+import { getEditorConfig } from '@/shared/config';
 
 export async function GET() {
   return Response.json(getEditorConfig());

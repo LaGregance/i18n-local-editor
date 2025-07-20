@@ -1,13 +1,13 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { queryKeys } from '@/shared/query-keys';
-import { Checkbox } from '@/components/checkbox';
+import { queryKeys } from '@/client/query-keys';
+import { Checkbox } from '@/client/components/checkbox';
 import { useEffect, useRef, useState } from 'react';
-import { SearchInput } from '@/components/search-input';
-import { EditTranslationDialog } from '@/dialog/edit-translation-dialog';
+import { SearchInput } from '@/client/components/search-input';
+import { EditTranslationDialog } from '@/client/dialog/edit-translation-dialog';
 import { useSearchParams } from 'next/navigation';
-import { useSetSearchParams } from '@/shared/use-set-search-params';
+import { useSetSearchParams } from '@/client/use-set-search-params';
 import { useEditorConfig } from '@/app/app-providers';
 
 export default function HomePageClient() {

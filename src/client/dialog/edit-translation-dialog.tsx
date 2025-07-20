@@ -1,7 +1,7 @@
-import { InputGroup } from '@/components/input-group';
+import { InputGroup } from '@/client/components/input-group';
 import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/shared/query-keys';
+import { queryKeys } from '@/client/query-keys';
 import { createURLQuery, manageAPIResponse } from '@/shared/utils';
 import { useEditorConfig } from '@/app/app-providers';
 
