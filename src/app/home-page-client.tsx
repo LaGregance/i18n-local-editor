@@ -51,6 +51,8 @@ export default function HomePageClient() {
           translations={editorConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {}) as any}
           isOpen={true}
           onClose={() => setAddDialogOpen(false)}
+          existingKeys={data && Object.keys(data)}
+          namespaces={editorConfig.namespaces}
         />
       )}
       {editingKey && data?.[editingKey] && (
@@ -61,6 +63,8 @@ export default function HomePageClient() {
           translations={data[editingKey]}
           isOpen={true}
           onClose={() => setHttpParams({ key: undefined })}
+          existingKeys={data && Object.keys(data)}
+          namespaces={editorConfig.namespaces}
         />
       )}
 

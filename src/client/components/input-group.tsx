@@ -5,10 +5,13 @@ export type InputGroupProps = {
   value: string;
   onChange: (value: string) => any;
   multiline?: boolean;
+
+  autocompleteId?: string;
+  autocomplete?: string[];
 };
 
 export const InputGroup = (props: InputGroupProps) => {
-  const { title, value, onChange, multiline } = props;
+  const { title, value, onChange, multiline, autocompleteId, autocomplete } = props;
 
   const countLines = useMemo(() => {
     const lines = value.split('\n');
@@ -33,11 +36,19 @@ export const InputGroup = (props: InputGroupProps) => {
             className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl border border-[#d4dce2] bg-gray-50 px-2 py-1 text-base leading-normal font-normal text-[#101518] placeholder:text-[#5c748a] focus:border-[#d4dce2] focus:ring-0 focus:outline-0"
           />
         ) : (
-          <input
-            className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl border border-[#d4dce2] bg-gray-50 px-2 py-1 text-base leading-normal font-normal text-[#101518] placeholder:text-[#5c748a] focus:border-[#d4dce2] focus:ring-0 focus:outline-0"
-            value={value}
-            onChange={(event) => onChange(event.target.value)}
-          />
+          <>
+            <input
+              list={autocompleteId}
+              className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl border border-[#d4dce2] bg-gray-50 px-2 py-1 text-base leading-normal font-normal text-[#101518] placeholder:text-[#5c748a] focus:border-[#d4dce2] focus:ring-0 focus:outline-0"
+              value={value}
+              onChange={(event) => onChange(event.target.value)}
+            />
+            <datalist id={autocompleteId}>
+              {autocomplete?.map((item) => (
+                <option key={item} value={item} />
+              ))}
+            </datalist>
+          </>
         )}
       </label>
     </div>

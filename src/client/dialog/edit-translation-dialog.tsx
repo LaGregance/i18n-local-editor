@@ -1,5 +1,5 @@
 import { InputGroup } from '@/client/components/input-group';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/client/query-keys';
 import { useEditorConfig } from '@/app/app-providers';
@@ -11,11 +11,14 @@ export type EditTranslationDialogProps = {
   translationKey: string;
   translations: any;
   mode: 'add' | 'edit';
+
+  namespaces?: string[];
+  existingKeys?: string[];
 };
 
 export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
   const editorConfig = useEditorConfig();
-  const { mode, isOpen, onClose } = props;
+  const { mode, isOpen, onClose, namespaces, existingKeys } = props;
 
   const [key, setKey] = useState(props.translationKey);
   const [translations, setTranslations] = useState(props.translations);
@@ -44,6 +47,19 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.transactions.getAll._def });
     }
   }, [props.translationKey, onClose, queryClient]);
+
+  const keysAutocomplete = useMemo(() => {
+    const result: string[] = [];
+    if (existingKeys) {
+      result.push(...existingKeys);
+    }
+    if (namespaces) {
+      for (const namespace of namespaces) {
+        result.push(namespace + ':');
+      }
+    }
+    return result;
+  }, [namespaces, existingKeys]);
 
   useEffect(() => {
     // Manage Ctrl+S
@@ -92,7 +108,13 @@ export const EditTranslationDialog = (props: EditTranslationDialogProps) => {
           </button>
         </div>
         <div className="max-h-[500px] overflow-y-scroll">
-          <InputGroup title="Key" value={key} onChange={setKey} />
+          <InputGroup
+            title="Key"
+            value={key}
+            onChange={setKey}
+            autocompleteId="keys-autocomplete"
+            autocomplete={keysAutocomplete}
+          />
           {editorConfig.locales.map((locale) => (
             <InputGroup
               key={locale}
