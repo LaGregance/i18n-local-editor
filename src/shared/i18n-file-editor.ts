@@ -174,7 +174,7 @@ export class I18nFileEditor {
 
         for (let key of Object.keys(translations)) {
           // Manage pluralization
-          key = removeSuffix(key, ['_zero', '_one', '_others']);
+          key = removeSuffix(key, ['_zero', '_one', '_other']);
 
           if (namespace === this.defaultNamespace) {
             pushIgnoreDuplicates(defaultKeys, key);
