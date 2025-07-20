@@ -44,17 +44,21 @@ export const createURLQuery = (params: any) => {
 export const manageAPIResponse = async (response: Response) => {
   if (response.status >= 400) {
     const data = await response.json();
-
-    const popup = document.createElement('div');
-    popup.innerHTML = `<div class="bg-red-500 text-white p-4 rounded-lg absolute top-10 right-10 z-20"><p>${data?.message ?? 'Unknown error'}</p></div>`;
-    document.querySelector('body')?.append(popup);
-
-    setTimeout(() => {
-      popup.remove();
-    }, 5000);
+    showSnackbar(data?.message ?? 'Unknown error', 'error');
     return false;
   }
   return true;
+};
+
+export const showSnackbar = (text: string, type: 'error' | 'info', duration = 5000) => {
+  const popup = document.createElement('div');
+  const color = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+  popup.innerHTML = `<div class="${color} text-white p-4 rounded-lg absolute top-10 right-10 z-20"><p>${text}</p></div>`;
+  document.querySelector('body')?.append(popup);
+
+  setTimeout(() => {
+    popup.remove();
+  }, duration);
 };
 
 export const pushIgnoreDuplicates = (array: string[], value: string) => {
