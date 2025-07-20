@@ -1,19 +1,3 @@
-export const countOccurrences = (str: string, sub: string) => {
-  if (sub === '') {
-    return 0;
-  }
-
-  let count = 0;
-  let pos = 0;
-
-  while ((pos = str.indexOf(sub, pos)) !== -1) {
-    count++;
-    pos++; // Move by 1 for overlap
-  }
-
-  return count;
-};
-
 export const setObjectValueAtPath = (obj: any, path: string, value: any) => {
   const keys = path.split('.');
 

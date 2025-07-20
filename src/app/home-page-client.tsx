@@ -168,7 +168,9 @@ export default function HomePageClient() {
                             </td>
                             {editorConfig.locales.map((locale) => (
                               <td key={locale} className="px-4 py-2 text-sm leading-normal font-normal text-[#49739c]">
-                                {data[key][locale]}
+                                {data[key][locale].length > 100
+                                  ? data[key][locale].slice(0, 100) + '...'
+                                  : data[key][locale]}
                               </td>
                             ))}
                           </tr>
