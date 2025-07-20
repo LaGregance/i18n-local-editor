@@ -1,9 +1,10 @@
 import * as fs from 'node:fs';
 import { format } from 'prettier';
-import { deleteObjectValueAtPath, pushIgnoreDuplicates, removeSuffix, setObjectValueAtPath } from '@/shared/utils';
+import { pushIgnoreDuplicates, removeSuffix } from '@/shared/utils';
 import path from 'node:path';
 import { getPWD } from '@/shared/get-pwd';
 import { getEditorConfig } from '@/shared/config';
+import { deleteObjectValueAtPath, getObjectValueAtPath, setObjectValueAtPath } from '@/shared/object-path';
 
 export abstract class I18nManager {
   static resolveFilePath(locale: string, namespace: string) {
@@ -131,6 +132,12 @@ export abstract class I18nManager {
       }
       const filePath = this.resolveFilePath(locale, namespace);
       const content = this.loadFile(filePath);
+
+      const existingValue = getObjectValueAtPath(content, key);
+      if (existingValue && typeof existingValue === 'object' && Object.keys(existingValue).length > 0) {
+        throw new Error('Section already exists');
+      }
+
       if (!value || !value[locale]) {
         deleteObjectValueAtPath(content, key);
       } else {
